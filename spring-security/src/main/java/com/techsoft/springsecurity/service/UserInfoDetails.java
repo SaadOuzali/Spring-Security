@@ -11,8 +11,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class UserInfoDetails implements UserDetails {
-    String userName=null;
-    String password = null;
+    String userName;
+    String password ;
     List<GrantedAuthority> authorities;
 
     public UserInfoDetails(UserInfo userInfo){
