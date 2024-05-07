@@ -41,7 +41,8 @@ Authentication authentication= SecurityContextHolder.getContext().getAuthenticat
     @GetMapping("/user")
     public Authentication auth(){
         Authentication authentication= SecurityContextHolder.getContext().getAuthentication();
-        System.out.println("hnaaa     "+SecurityContextHolder.getContext().getAuthentication()==null);
+        System.out.println("fuser");
+        System.out.println(SecurityContextHolder.getContext().getAuthentication()==null);
         return authentication;
     }
 
@@ -60,7 +61,8 @@ Authentication authentication= SecurityContextHolder.getContext().getAuthenticat
 //        UserDetails userDetails = userInfoService.loadUserByUsername(authRequest.getUserName());
 //        UsernamePasswordAuthenticationToken authToken=
 //                new UsernamePasswordAuthenticationToken(userDetails,null);
-//        SecurityContextHolder.getContext().setAuthentication(authToken);
+//        System.out.println(SecurityContextHolder.getContext().getAuthentication());
+//        SecurityContextHolder.getContext().setAuthentication(authenticate);
 //        if(authenticate.isAuthenticated()){
             return jwtService.generateToken(authRequest.getUserName());
 //        }else {
@@ -84,7 +86,8 @@ Authentication authentication= SecurityContextHolder.getContext().getAuthenticat
     @GetMapping("/getUsers")
 //    @PreAuthorize("hasAuthority('ADMIN_ROLES') or hasAuthority('USER_ROLES')")
     public List<UserInfo> getAllUsers(){
-        System.out.println( "dabla"+SecurityContextHolder.getContext().getAuthentication()==null);
+        System.out.println("dabla");
+        System.out.println( SecurityContextHolder.getContext().getAuthentication());
         return userInfoService.getAllUser();
     }
     @GetMapping("/getUsers/{id}")
