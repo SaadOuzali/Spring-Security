@@ -1,10 +1,12 @@
 package com.techsoft.springsecurity.controller;
 
+import com.techsoft.springsecurity.emailService.EmailService;
 import com.techsoft.springsecurity.entity.AuthRequest;
 import com.techsoft.springsecurity.entity.UserInfo;
 import com.techsoft.springsecurity.logout.BlackList;
 import com.techsoft.springsecurity.service.JwtService;
 import com.techsoft.springsecurity.service.UserInfoService;
+import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -29,6 +31,9 @@ public class UserController {
     private JwtService jwtService;
 
     @Autowired
+    private EmailService emailService;
+
+    @Autowired
     private BlackList blackList;
 
     @GetMapping("/welcome")
@@ -42,7 +47,7 @@ Authentication authentication= SecurityContextHolder.getContext().getAuthenticat
     public Authentication auth(){
         Authentication authentication= SecurityContextHolder.getContext().getAuthentication();
         System.out.println("fuser");
-        System.out.println(SecurityContextHolder.getContext().getAuthentication()==null);
+        System.out.println(SecurityContextHolder.getContext());
         return authentication;
     }
 
@@ -61,7 +66,7 @@ Authentication authentication= SecurityContextHolder.getContext().getAuthenticat
 //        UserDetails userDetails = userInfoService.loadUserByUsername(authRequest.getUserName());
 //        UsernamePasswordAuthenticationToken authToken=
 //                new UsernamePasswordAuthenticationToken(userDetails,null);
-//        System.out.println(SecurityContextHolder.getContext().getAuthentication());
+        System.out.println(SecurityContextHolder.getContext().getAuthentication());
 //        SecurityContextHolder.getContext().setAuthentication(authenticate);
 //        if(authenticate.isAuthenticated()){
             return jwtService.generateToken(authRequest.getUserName());
@@ -94,5 +99,10 @@ Authentication authentication= SecurityContextHolder.getContext().getAuthenticat
 //    @PreAuthorize("hasAuthority('USER_ROLES')")
     public UserInfo getAllUsers(@PathVariable Integer id){
         return userInfoService.getUser(id);
+    }
+
+    @GetMapping("/email")
+    public void email() throws MessagingException {
+        emailService.sendEmail("saad","saadouzali@gmail.com","hh","hh","");
     }
 }
