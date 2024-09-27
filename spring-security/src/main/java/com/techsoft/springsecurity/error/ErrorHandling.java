@@ -21,30 +21,34 @@ public class ErrorHandling {
     if (ex instanceof BadCredentialsException){
          problemDetail=ProblemDetail.forStatusAndDetail(
                 HttpStatusCode.valueOf(401), ex.getMessage());
-        problemDetail.setProperty("reason","Bad credantials");
+        problemDetail.setProperty("reason","Bad credantialssssss");
     } else if (ex instanceof AccessDeniedException) {
         problemDetail=ProblemDetail.forStatusAndDetail(
                 HttpStatusCode.valueOf(403), ex.getMessage());
         problemDetail.setProperty("reason","not auhthorized");
     } else if (ex instanceof UsernameNotFoundException) {
         problemDetail=ProblemDetail.forStatusAndDetail(
-                HttpStatusCode.valueOf(403), ex.getMessage());
+                HttpStatusCode.valueOf(401), ex.getMessage());
         problemDetail.setProperty("reason","user name not found");
     }else if (ex instanceof ExpiredJwtException) {
         problemDetail=ProblemDetail.forStatusAndDetail(
-                HttpStatusCode.valueOf(403), ex.getMessage());
+                HttpStatusCode.valueOf(401), ex.getMessage());
         problemDetail.setProperty("reason","JWT token expired");
     }
 
         return problemDetail;
     }
 //
+
+
     @ExceptionHandler(LockedException.class)
     public ProblemDetail sign(LockedException ex){
         ProblemDetail problemDetail=ProblemDetail.forStatusAndDetail(
                 HttpStatusCode.valueOf(403), ex.getMessage());
-        problemDetail.setProperty("reason","JWT signature does not match locally computed signature");
+        problemDetail.setProperty("reason","the account is locked");
 
         return problemDetail;
     }
+
+
 }

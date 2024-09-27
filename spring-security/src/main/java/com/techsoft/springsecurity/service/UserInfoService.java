@@ -3,6 +3,7 @@ package com.techsoft.springsecurity.service;
 import com.techsoft.springsecurity.entity.UserInfo;
 import com.techsoft.springsecurity.repository.UserInfoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -24,10 +25,17 @@ public class UserInfoService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         System.out.println("loaduser");
         Optional<UserInfo> userInfo = userInfoRepository.findByEmail(username);
-        System.out.println(userInfo.get().getPassword());
-        System.out.println(userInfo.get().getEmail());
+        System.out.println(userInfo);
+        System.out.println("kamllll");
+        System.out.println("this line 1"+userInfo.get().getPassword());
+        System.out.println("this line 2"+userInfo.get().getEmail());
+
+//        if (userInfo.isPresent()){
+//            return UserInfoDetails
+//        }
         return userInfo.map(UserInfoDetails::new)
                 .orElseThrow(()-> new UsernameNotFoundException("User not found"+username));
+//                .orElseThrow(()-> new BadCredentialsException("User not found"+username));
     }
 
     public String addUser(UserInfo userInfo){

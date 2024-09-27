@@ -1,10 +1,12 @@
 package com.techsoft.springsecurity.config;
 
+import com.techsoft.springsecurity.filter.AuthFilter;
 import com.techsoft.springsecurity.filter.JwtFilter;
 import com.techsoft.springsecurity.service.UserInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -17,6 +19,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
@@ -26,6 +29,9 @@ public class SecurityConfig {
 
     @Autowired
     private JwtFilter jwtFilter;
+
+    @Autowired
+    private AuthFilter authFilter;
 
     @Autowired
     private UserDetailsService userDetailsService;
@@ -43,10 +49,16 @@ public class SecurityConfig {
                    .anyRequest().authenticated();
     })
                 .sessionManagement(session->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+
                 .authenticationProvider(authenticationProvider())
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+//                .addFilterBefore(authFilter, FilterSecurityInterceptor.class)
                 .build();
     }
+
+
+
+
 
     @Bean
     public AuthenticationProvider authenticationProvider() {

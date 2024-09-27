@@ -8,6 +8,8 @@ import com.techsoft.springsecurity.service.JwtService;
 import com.techsoft.springsecurity.service.UserInfoService;
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -16,6 +18,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -32,6 +35,8 @@ public class UserController {
 
     @Autowired
     private EmailService emailService;
+
+    private static final Logger LOGGER= LoggerFactory.getLogger(UserController.class);
 
     @Autowired
     private BlackList blackList;
@@ -53,6 +58,7 @@ Authentication authentication= SecurityContextHolder.getContext().getAuthenticat
 
     @PostMapping("/addUser")
     public String addUser(@RequestBody UserInfo userInfo){
+        LOGGER.info("user added successfully");
         return userInfoService.addUser(userInfo);
     }
     @PostMapping("/login")
@@ -68,25 +74,27 @@ Authentication authentication= SecurityContextHolder.getContext().getAuthenticat
 //                new UsernamePasswordAuthenticationToken(userDetails,null);
         System.out.println(SecurityContextHolder.getContext().getAuthentication());
 //        SecurityContextHolder.getContext().setAuthentication(authenticate);
-//        if(authenticate.isAuthenticated()){
+        if(authenticate.isAuthenticated()){
             return jwtService.generateToken(authRequest.getUserName());
-//        }else {
-//            throw new UsernameNotFoundException("Invalid user request");
-//        }
+        }else {
+            throw new UsernameNotFoundException("Invalid user request");
+        }
 //        return jwtService.generateToken(authRequest.getUserName());
 //        return "all is good";
     }
     @PostMapping("/logout")
 //    @PreAuthorize("hasAuthority('USER_ROLES') or hasAuthority('ADMIN_ROLES')")
     public String logoutUser(HttpServletRequest request){
-        String authHeader = request.getHeader("Authorization");
-        String token= null;
-        if(authHeader !=null && authHeader.startsWith("Bearer")){
-            token = authHeader.substring(7);
-        }
-        blackList.blacKListToken(token);
+//        String authHeader = request.getHeader("Authorization");
+//        String token= null;
+//        if(authHeader !=null && authHeader.startsWith("Bearer")){
+//            token = authHeader.substring(7);
+//        }
+//        blackList.blacKListToken(token);
         return "You have successfully logged out !!";
     }
+
+
 
     @GetMapping("/getUsers")
 //    @PreAuthorize("hasAuthority('ADMIN_ROLES') or hasAuthority('USER_ROLES')")

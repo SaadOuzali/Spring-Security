@@ -2,11 +2,13 @@ package com.techsoft.springsecurity.filter;
 
 import com.techsoft.springsecurity.service.JwtService;
 import com.techsoft.springsecurity.service.UserInfoService;
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -56,8 +58,9 @@ public class JwtFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String authHeader = request.getHeader("Authorization");
+
         System.out.println("hna");
-        System.out.println(SecurityContextHolder.getContext()==null);
+        System.out.println(SecurityContextHolder.getContext().getAuthentication()==null);
         System.out.println("salam hhhh");
         String token= null;
         String userName = null;
@@ -65,7 +68,11 @@ public class JwtFilter extends OncePerRequestFilter {
             System.out.println("hna1");
             token = authHeader.substring(7);
             System.out.println( SecurityContextHolder.getContext().getAuthentication()==null);
-            userName =jwtService.extractUserName(token);
+            try {
+                userName =jwtService.extractUserName(token);
+            }catch (Exception e){
+                throw new ExpiredJwtException(null,null,"your token expired");
+            }
         }
         if(userName !=null){
             System.out.println("hna2");
@@ -80,6 +87,7 @@ public class JwtFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(authToken);
             }
         }
+
         filterChain.doFilter(request,response);
     }
 }
